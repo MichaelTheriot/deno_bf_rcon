@@ -43,6 +43,10 @@ class RconConnection implements Deno.Closer {
 
 const Rcon = {
     async connect(options: { hostname: string, port: number, password: string, bufferSize?: number }) {
+        if (options.bufferSize !== undefined && (options.bufferSize <= 0 || !Number.isInteger(options.bufferSize))) {
+            throw new RangeError('Buffer size must be a positive integer');
+        }
+
         const conn = await Deno.connect({ hostname: options.hostname, port: options.port });
         const buffer = new Uint8Array(options.bufferSize ?? 256);
 
